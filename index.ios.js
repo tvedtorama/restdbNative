@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import {
   AppRegistry,
@@ -34,9 +28,15 @@ export default class restdbNative extends Component {
   constructor(props) {
     super(props)
 
+    this.state = {count: 0, type: ''}
+
+    const updateCount = x => this.setState({count: x.length, type: x[0].type})
 
     setTimeout(() => {
-      loadShit({}, x => {console.log("got " + x.length + " items")})
+      loadShit({}, x => {
+        console.log("got " + x.length + " items")
+        updateCount(x)
+      })
     }, 5000)
   }
 
@@ -46,8 +46,14 @@ export default class restdbNative extends Component {
       <View style={styles.container}>
         <Text style={styles.welcome}>
         {
-          "Welcome to React Native!" + hell(24)
+          "Welcome to React Native! " + hell(24)
         }
+        </Text>
+        <Text style={styles.info}>
+          {"items loaded: " + this.state.count}
+        </Text>
+        <Text style={styles.info}>
+          {"first type: " + this.state.type}
         </Text>
         <Text style={styles.instructions}>
           To get started, edit index.ios.js
@@ -67,6 +73,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
+  },
+  info: {
+    textAlign: 'center',
+    marginBottom: 5,
   },
   welcome: {
     fontSize: 20,
