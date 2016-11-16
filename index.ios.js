@@ -14,11 +14,7 @@ import {createReduxStore, LOGIN_OK} from './build/app/init'
 
 import {get, post} from 'axios'
 
-import Auth0Lock from 'react-native-lock'
-
 var store = createReduxStore()
-
-var lock = new Auth0Lock({clientId: "zoLMrrJUrcyp7iPkcpg6omSdakv5hZrS", domain: "digitalvaluenetwork.eu.auth0.com"});
 
 function getHeader(dbData, idToken) {
   const apiKey = idToken ? null : { "x-apikey": dbData.apiKey }
@@ -63,37 +59,15 @@ export default class restdbNative extends Component {
     })
   }
 
-  onLogin() {
-    lock.show({}, (err, profile, token) => {
-      console.log('Logged in! : ', token);
-      this.postItem(token.idToken)
-      store.dispatch({type: LOGIN_OK, idToken: token.idToken})
-    });
-  }
-
   render() {
-    const hell = x => 10 * x
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
         {
-          "Welcome to React Native! " + hell(24)
+          "Welcome to React Native! "
         }
         </Text>
-        <Text style={styles.info}>
-          {"items loaded: " + this.state.count}
-        </Text>
-        <Text style={styles.info}>
-          {"first message: " + this.state.message}
-        </Text>
         <Root store={store}/>
-        <TouchableHighlight onPress={x => this.onLogin()}>
-          <Text>{"click here to log on"}</Text>
-        </TouchableHighlight>        
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
-        </Text>
       </View>
     );
   }
