@@ -9,9 +9,15 @@ import {
   View
 } from 'react-native';
 
+import {Root} from './build/app/root'
+import {createReduxStore, LOGIN_OK} from './build/app/init'
+
 import {get, post} from 'axios'
 
 import Auth0Lock from 'react-native-lock'
+
+var store = createReduxStore()
+
 var lock = new Auth0Lock({clientId: "zoLMrrJUrcyp7iPkcpg6omSdakv5hZrS", domain: "digitalvaluenetwork.eu.auth0.com"});
 
 function getHeader(dbData, idToken) {
@@ -61,6 +67,7 @@ export default class restdbNative extends Component {
     lock.show({}, (err, profile, token) => {
       console.log('Logged in! : ', token);
       this.postItem(token.idToken)
+      store.dispatch({type: LOGIN_OK, idToken: token.idToken})
     });
   }
 
@@ -79,6 +86,7 @@ export default class restdbNative extends Component {
         <Text style={styles.info}>
           {"first message: " + this.state.message}
         </Text>
+        <Root store={store}/>
         <TouchableHighlight onPress={x => this.onLogin()}>
           <Text>{"click here to log on"}</Text>
         </TouchableHighlight>        

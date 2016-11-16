@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "jsx": "react", 
+        "module": "CommonJS",
+        "moduleResolution": "node",
+        "target": "es6",
+        "sourceMap": true,
+        "skipLibCheck": true
+    },
+    "filesGlob": [
+        "./app/**/*.ts",
+        "./app/**/*.tsx",
+        "!./node_modules/**",
+        "!./typings/**",
+        "!tsserver/**",
+        "./typings/index.d.ts"
+    ]
+}
