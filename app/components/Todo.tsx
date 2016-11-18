@@ -1,8 +1,11 @@
 import * as React from 'react'
 import {connect} from 'react-redux'
 import {spring, presets, TransitionMotion} from 'react-motion' 
-
 import {View, ScrollView, Text, TextInput, Switch, TouchableHighlight, Button} from 'react-native'
+
+import {IState} from '../IState' 
+import {REQUEST_ADD_TAKS} from '../sagas/mainLoop'
+
 import {styles} from '../styles'
 
 interface ITodoRecord {
@@ -16,28 +19,29 @@ interface ICompState {
 	selected?: string
 }
 
-export class TodoRaw extends React.Component<any, ICompState> {
-	constructor(props) {
+interface IProps {
+
+}
+
+interface IMangledProps {
+	todos?: ITodoRecord[]
+	addTask?: (text:string) => void
+}
+
+export class TodoRaw extends React.Component<IProps & IMangledProps, ICompState> {
+	constructor(props: IProps & IMangledProps) {
 		super(props)
 
 		this.state = {
-			todos: [
-				// key is creation date
-				{ key: 't1', data: { text: 'Board the plane', isDone: false } },
-				{ key: 't2', data: { text: 'Sleep', isDone: false } },
-				{ key: 't3', data: { text: 'Try to finish conference slides', isDone: false } },
-				{ key: 't4', data: { text: 'Eat cheese and drink wine', isDone: false } },
-				{ key: 't5', data: { text: 'Go around in Uber', isDone: false } },
-				{ key: 't6', data: { text: 'Talk with conf attendees', isDone: false } },
-				{ key: 't7', data: { text: 'Show Demo 1', isDone: false } },
-				{ key: 't8', data: { text: 'Show Demo 2', isDone: false } },
-				{ key: 't9', data: { text: 'Lament about the state of animation', isDone: false } },
-				{ key: 't10', data: { text: 'Show Secret Demo', isDone: false } },
-				{ key: 't11', data: { text: 'Go home', isDone: false } },
-			],
+			todos: props.todos,
 			value: '',
 			selected: 'all',
 		}
+	}
+
+	// TEMP logic to update state
+	componentWillReceiveProps(newProps){
+		this.setState({todos: newProps.todos}) 
 	}
 
 	// logic from todo, unrelated to animation
@@ -46,12 +50,8 @@ export class TodoRaw extends React.Component<any, ICompState> {
 	}
 
 	handleSubmit() {
-		const newItem = {
-			key: 't' + Date.now(),
-			data: { text: this.state.value, isDone: false },
-		};
-		// append at head
-		this.setState({ todos: [newItem, ...this.state.todos] });
+		this.props.addTask(this.state.value)
+		this.setState({value: ''})
 	}
 
 	handleDone(doneKey) {
@@ -204,6 +204,11 @@ export class TodoRaw extends React.Component<any, ICompState> {
 	}
 }
 
-const Todo = TodoRaw
+function mapStateToProps(state: IState, ownProps: any) : IMangledProps {
+	return {todos: state.tasks.map(({taskId, text, isDone}) => ({key: taskId, data: {text, isDone}}))}
+}
+
+
+const Todo = connect(mapStateToProps, {addTask: (text) => ({type: REQUEST_ADD_TAKS, text})})(TodoRaw)
 
 export {Todo}

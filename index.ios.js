@@ -9,7 +9,7 @@ import {
   View
 } from 'react-native';
 
-import {Root} from './build/app/root'
+import {Root} from './build/app/root' // See: ./app/root.tsx
 import {createReduxStore, LOGIN_OK} from './build/app/init'
 
 import {get, post} from 'axios'

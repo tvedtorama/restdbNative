@@ -1,7 +1,8 @@
 
 export interface ITask {
+	taskId: string
 	text: string
-	completed: boolean
+	isDone: boolean
 }
 
 export interface ILoginData {
