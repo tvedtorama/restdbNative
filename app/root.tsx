@@ -3,6 +3,7 @@ import {IState,ITask} from './IState'
 import {connect, Provider} from 'react-redux'
 import {Text} from 'react-native'
 import {Login} from './components/Login'
+import {Todo} from './components/Todo'
 
 
 interface IProps {
@@ -17,7 +18,7 @@ interface IMangedProps {
 export class MainRaw extends React.Component<IProps & IMangedProps, any> {
 	render() {
 		if (this.props.loggedIn)
-			return <Text>{"Yay! logged in ! " + this.props.tasks.length}</Text>
+			return <Todo />
 		else 
 			return <Login />
 	}

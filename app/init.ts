@@ -21,6 +21,8 @@ export function createReduxStore() {
 
 	middleware.run(mainLoop)
 
+	store.dispatch({type: LOGIN_OK, idToken: 'FAKE'}) // Skip login for now
+
 	return store
 }
 

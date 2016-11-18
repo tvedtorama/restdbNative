@@ -62,12 +62,7 @@ export default class restdbNative extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-        {
-          "Welcome to React Native! "
-        }
-        </Text>
-        <Root store={store}/>
+        <Root store={store} />
       </View>
     );
   }
@@ -79,20 +74,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
-  },
-  info: {
-    textAlign: 'center',
-    marginBottom: 5,
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
   },
 });
 
