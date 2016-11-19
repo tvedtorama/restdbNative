@@ -5,8 +5,8 @@ import {ADD_TASK, SET_TASK_COMPLETION, DELETE_TASK} from '../sagas/mainLoop'
 
 export function tasks(state: ITask[] = [], action: {type: string}) {
 	if (action.type === ADD_TASK) {
-		const a = <{text: string, messageId: string, isDone: boolean}><any>action
-		return [...state, <ITask>(a as any)]
+		const {task} = <{task: {text: string, taskId: string, isDone: boolean}}><any>action
+		return [...state, <ITask>task]
 	}
 	if (action.type === SET_TASK_COMPLETION) {
 		const {id, isDone} = <{id: string, isDone: boolean}><any>action

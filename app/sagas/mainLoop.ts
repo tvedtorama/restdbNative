@@ -2,9 +2,9 @@ import * as _ from 'lodash'
 import {takeEvery} from 'redux-saga'
 import {put, take, select, call} from 'redux-saga/effects'
 
-import {get, post} from 'axios'
-
 import {IState, ITask} from '../IState'
+
+import {loadTasks, storeDbItem} from '../database'
 
 // Actions from saga to reducer 
 export const ADD_TASK = "ADD_TASK"
@@ -20,15 +20,21 @@ export const REQUEST_SET_ALL_TASKS_COMPLETION = "REQUEST_SET_ALL_TASKS_COMPLETIO
 export const REQUEST_DELETE_TASK = "REQUEST_DELETE_TASK"
 export const REQUEST_CLEAR_COMPLETED = "REQUEST_CLEAR_COMPLETED"
 
-export function* requestAddTask(idToken, action: {text: string}) {
+export function* requestAddTask(idToken, action: {text: string}): Iterator<any> {
 	console.log("reqAddTask", action)
-	yield put({type: ADD_TASK, text: action.text, taskId: Date.now().toString(), isDone: false})
+	const task = {text: action.text, taskId: Date.now().toString(), isDone: false}
+	const dbTask = (yield call(storeDbItem, task, idToken))
+	yield put({type: ADD_TASK, task: dbTask})
 }
 
 export function* requestSetTaskCompletion(idToken, action: {id: string, isDone?: boolean}) : Iterator<any> {
+	const oldTask = _((<IState>(yield select())).tasks).filter(x => x.taskId === action.id).head()
 	const isDone = _.isUndefined(action.isDone) ? 
-		!_((<IState>(yield select())).tasks).filter(x => x.taskId === action.id).head().isDone : 
+		!oldTask.isDone : 
 		action.isDone
+
+	const newTask = Object.assign({}, oldTask, {isDone})
+	yield call(storeDbItem, newTask, idToken)
 
 	yield put({type: SET_TASK_COMPLETION, id: action.id, isDone})
 }
@@ -51,26 +57,6 @@ export function* requestClearCompleted(idToken, action: {}): Iterator<any> {
 	yield wrongStateItems.map(x => call(requestDeleteTask, {id: x.taskId})).value()	
 }
 
-function getHeader(dbData, idToken) {
-	const apiKey = idToken ? null : { "x-apikey": dbData.apiKey }
-	const token = idToken ? { 'Authorization': 'Bearer ' + idToken } : null
-	return { headers: Object.assign({}, apiKey, token) }
-}
-
-const collection = "task"
-
-const dbData = { url: "https://reactnative-ec9e.restdb.io", apiKey: "582aa43e178b07f36f7e5043" }
-
-function loadTasks(params, idToken) {
-	return get(`${dbData.url}/rest/${collection}`, Object.assign(getHeader(dbData, idToken), {
-		params
-	})).then(x => {
-		return x.data
-	}).catch(err => {
-		console.error("error in axios", err)
-	})
-}
-
 export function* mainLoop() : any {
 	const action = yield take(LOGIN_OK) // Waits for login to complete
 	
@@ -78,7 +64,7 @@ export function* mainLoop() : any {
 	yield put({type: SET_LOGIN_DATA, idToken})
 
 	const loadedTasks = <ITask[]>(yield call(loadTasks, {}, idToken))
-	yield loadedTasks.map(x => put(Object.assign({}, x, {type: ADD_TASK})))
+	yield loadedTasks.map(task => put({type: ADD_TASK, task}))
 
 	yield takeEvery(REQUEST_ADD_TAKS, requestAddTask, idToken)
 	yield takeEvery(REQUEST_SET_TASK_COMPLETION, requestSetTaskCompletion, idToken)
