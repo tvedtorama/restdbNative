@@ -4,7 +4,8 @@ import {spring, presets, TransitionMotion} from 'react-motion'
 import {View, ScrollView, Text, TextInput, Switch, TouchableHighlight, Button} from 'react-native'
 
 import {IState} from '../IState' 
-import {REQUEST_ADD_TAKS, REQUEST_SET_TASK_COMPLETION, REQUEST_SET_ALL_TASKS_COMPLETION} from '../sagas/mainLoop'
+import {REQUEST_ADD_TAKS, REQUEST_SET_TASK_COMPLETION, REQUEST_SET_ALL_TASKS_COMPLETION,
+ 			REQUEST_CLEAR_COMPLETED, REQUEST_DELETE_TASK} from '../sagas/mainLoop'
 
 import {styles} from '../styles'
 
@@ -28,6 +29,8 @@ interface IMangledProps {
 	addTask?: (text:string) => void
 	setCompletion?: (id, isDone?) => void
 	setAllCompletion?: (isDone) => void
+	deleteTask?: (id) => void,
+	clearCompleted?: () => void,
 }
 
 export class TodoRaw extends React.Component<IProps & IMangledProps, ICompState> {
@@ -70,11 +73,11 @@ export class TodoRaw extends React.Component<IProps & IMangledProps, ICompState>
 	}
 
 	handleClearCompleted() {
-		this.setState({ todos: this.state.todos.filter(({data}) => !data.isDone) });
+		this.props.clearCompleted()
 	}
 
 	handleDestroy(date) {
-		this.setState({ todos: this.state.todos.filter(({key}) => key !== date) });
+		this.props.deleteTask(date)
 	}
 
 	// actual animation-related logic
@@ -204,6 +207,9 @@ const Todo = connect(mapStateToProps, {
 	addTask: (text) => ({type: REQUEST_ADD_TAKS, text}),
 	setCompletion: (id, isDone?) => ({type: REQUEST_SET_TASK_COMPLETION, id, isDone}),
 	setAllCompletion: (isDone) => ({type: REQUEST_SET_ALL_TASKS_COMPLETION, isDone}),
+	deleteTask: (id) => ({type: REQUEST_DELETE_TASK, id}),
+	clearCompleted: () => ({type: REQUEST_CLEAR_COMPLETED}),
+
 
 })(TodoRaw)
 
