@@ -15,7 +15,6 @@ interface ITodoRecord {
 }
 
 interface ICompState {
-	todos?: ITodoRecord[]
 	value?: string
 	selected?: string
 }
@@ -38,15 +37,9 @@ export class TodoRaw extends React.Component<IProps & IMangledProps, ICompState>
 		super(props)
 
 		this.state = {
-			todos: props.todos,
 			value: '',
 			selected: 'all',
 		}
-	}
-
-	// TEMP logic to update state
-	componentWillReceiveProps(newProps){
-		this.setState({todos: newProps.todos}) 
 	}
 
 	// logic from todo, unrelated to animation
@@ -64,7 +57,7 @@ export class TodoRaw extends React.Component<IProps & IMangledProps, ICompState>
 	}
 
 	handleToggleAll() {
-		const allNotDone = this.state.todos.every(({data}) => data.isDone);
+		const allNotDone = this.props.todos.every(({data}) => data.isDone);
 		this.props.setAllCompletion(!allNotDone)
 	}
 
@@ -82,11 +75,12 @@ export class TodoRaw extends React.Component<IProps & IMangledProps, ICompState>
 
 	// actual animation-related logic
 	getDefaultStyles() {
-		return this.state.todos.map(todo => Object.assign({}, todo, { style: { height: 0, opacity: 1 } }))
+		return this.props.todos.map(todo => Object.assign({}, todo, { style: { height: 0, opacity: 1 } }))
 	}
 
 	getStyles() {
-		const {todos, value, selected} = this.state;
+		const {todos} = this.props
+		const {value, selected} = this.state;
 		return todos.filter(({data: {isDone, text}}) => {
 			return text.toUpperCase().indexOf(value.toUpperCase()) >= 0 &&
 				(selected === 'completed' && isDone ||
@@ -119,16 +113,15 @@ export class TodoRaw extends React.Component<IProps & IMangledProps, ICompState>
 	}
 
 	render() {
-		const {todos, value, selected} = this.state;
-		const itemsLeft = todos.filter(({data: {isDone}}) => !isDone).length;
-// 		console.log("todorow", styles.todoRow)
+		const {value, selected} = this.state;
+		const itemsLeft = this.props.todos.filter(({data: {isDone}}) => !isDone).length;
 		return (
 			<View style={styles.main}>
-				<Text>todos</Text>
+				<Text style={styles.welcome}>Todos</Text>
 				<View style={styles.newItemRow}>
-					<Switch
-						value={itemsLeft === 0} // style={{ display: todos.length === 0 ? 'none' : 'inline' }}
-						onValueChange={e => this.handleToggleAll()} />
+					{(this.props.todos.length > 0) && <Switch
+						value={itemsLeft === 0}
+						onValueChange={e => this.handleToggleAll()} /> }
 
 					<TextInput
 						autoFocus={true}
@@ -137,7 +130,7 @@ export class TodoRaw extends React.Component<IProps & IMangledProps, ICompState>
 						style={styles.newItemEdit}
 						onChange={(e) => this.handleChange(e.nativeEvent.text)}
 						/>
-					<Button title="Go" style={styles.newItemRowButton} onPress={() => this.handleSubmit()} />
+					<Button title="Add" style={styles.newItemRowButton} onPress={() => this.handleSubmit()} />
 				</View>
 				<View >
 					<TransitionMotion
