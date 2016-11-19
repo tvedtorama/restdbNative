@@ -4,7 +4,7 @@ import {spring, presets, TransitionMotion} from 'react-motion'
 import {View, ScrollView, Text, TextInput, Switch, TouchableHighlight, Button} from 'react-native'
 
 import {IState} from '../IState' 
-import {REQUEST_ADD_TAKS} from '../sagas/mainLoop'
+import {REQUEST_ADD_TAKS, REQUEST_SET_TASK_COMPLETION} from '../sagas/mainLoop'
 
 import {styles} from '../styles'
 
@@ -26,6 +26,7 @@ interface IProps {
 interface IMangledProps {
 	todos?: ITodoRecord[]
 	addTask?: (text:string) => void
+	setCompletion?: (id, isDone?) => void
 }
 
 export class TodoRaw extends React.Component<IProps & IMangledProps, ICompState> {
@@ -55,14 +56,7 @@ export class TodoRaw extends React.Component<IProps & IMangledProps, ICompState>
 	}
 
 	handleDone(doneKey) {
-		this.setState({
-			todos: this.state.todos.map(todo => {
-				const {key, data: {text, isDone}} = todo;
-				return key === doneKey
-					? { key: key, data: { text: text, isDone: !isDone } }
-					: todo;
-			}),
-		});
+		this.props.setCompletion(doneKey)
 	}
 
 	handleToggleAll() {
@@ -209,6 +203,9 @@ function mapStateToProps(state: IState, ownProps: any) : IMangledProps {
 }
 
 
-const Todo = connect(mapStateToProps, {addTask: (text) => ({type: REQUEST_ADD_TAKS, text})})(TodoRaw)
+const Todo = connect(mapStateToProps, {
+	addTask: (text) => ({type: REQUEST_ADD_TAKS, text}),
+	setCompletion: (id, isDone?) => ({type: REQUEST_SET_TASK_COMPLETION, id, isDone}),
+})(TodoRaw)
 
 export {Todo}
