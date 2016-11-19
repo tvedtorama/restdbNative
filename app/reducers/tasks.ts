@@ -10,8 +10,7 @@ export function tasks(state: ITask[] = [], action: {type: string}) {
 	}
 	if (action.type === SET_TASK_COMPLETION) {
 		const {id, isDone} = <{id: string, isDone: boolean}><any>action
-		const currentTask = _(state).filter(x => x.taskId === id).head()
-		return [...state.filter(x => x.taskId !== id), Object.assign({}, currentTask, {isDone})]
+		return [...state.map(x => x.taskId === id ? Object.assign({}, x, {isDone}) : x)]
 	}
 	return state
 }
