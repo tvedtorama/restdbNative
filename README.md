@@ -27,7 +27,12 @@ The GUI was also converted to redux and some very simple sagas takes care of per
 
 User authentication with Auth0 is a breeze, the GUI simply displays a login screen which is overlaid with the Auth0 login panel.  When a JWT is received, the redux saga toggles state and the todo-GUI is shown.
 
+**Building and Debugging**
+
 Building is done by `gulp build` or `gulp watch`.  This produces at javascript file hierarchy under /build, which is used runtime. When hot reloading is activated, the GUI updates after each build. (ATW, this causes the login screen to reappear - not very "hot" then.)
 
 To debug, use "remote js debugging" in chrome, and connect the amazing [remote-redux-devtools](https://github.com/zalmoxisus/remote-redux-devtools).  This can be done by uncommenting `composeEnhancers(applyMiddleware(middleware)))` in *init.ts*.  With the remote devtools active, head over to remotedev.io/local and see the state of the app unfolding.  Magic!
 
+**Making it you own**
+
+Set ut a free database over at restdb.io, and get an account at Auth0.  Configre the db in app/database.ts, setup the Auth0 clientId in components/Todo.tsx.
