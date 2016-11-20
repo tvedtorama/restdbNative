@@ -1,4 +1,4 @@
-import {get, put, post} from 'axios'
+import {get, put, post, delete as axiosDelete} from 'axios'
 
 const dbData = { url: "https://reactnative-ec9e.restdb.io", apiKey: "582aa43e178b07f36f7e5043" }
 const collection = "task"
@@ -14,6 +14,13 @@ export function storeDbItem(item: any, idToken): Promise<any> {
 	const method = item._id ? put : post // (url, item) => axiosPut(url, item, gt) post(url, item, getHeader) : put()
 	const putPath = item._id ? "/" + item._id : ""
 	return Promise.resolve(method(`${dbData.url}/rest/${collection}${putPath}`, item, getHeader(dbData, idToken))).then(x => {
+		return x.data
+	})
+}
+
+export function deleteDbItem(_id: string, idToken): Promise<any> {
+	const header = getHeader(dbData, idToken)
+	return Promise.resolve(axiosDelete(`${dbData.url}/rest/${collection}/${_id}`, getHeader(dbData, idToken))).then(x => {
 		return x.data
 	})
 }

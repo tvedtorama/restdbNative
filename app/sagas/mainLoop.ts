@@ -4,7 +4,7 @@ import {put, take, select, call} from 'redux-saga/effects'
 
 import {IState, ITask} from '../IState'
 
-import {loadTasks, storeDbItem} from '../database'
+import {loadTasks, storeDbItem, deleteDbItem} from '../database'
 
 // Actions from saga to reducer 
 export const ADD_TASK = "ADD_TASK"
@@ -21,14 +21,17 @@ export const REQUEST_DELETE_TASK = "REQUEST_DELETE_TASK"
 export const REQUEST_CLEAR_COMPLETED = "REQUEST_CLEAR_COMPLETED"
 
 export function* requestAddTask(idToken, action: {text: string}): Iterator<any> {
-	console.log("reqAddTask", action)
 	const task = {text: action.text, taskId: Date.now().toString(), isDone: false}
 	const dbTask = (yield call(storeDbItem, task, idToken))
 	yield put({type: ADD_TASK, task: dbTask})
 }
 
-export function* requestSetTaskCompletion(idToken, action: {id: string, isDone?: boolean}) : Iterator<any> {
-	const oldTask = _((<IState>(yield select())).tasks).filter(x => x.taskId === action.id).head()
+const getTask = function* (action: {id}) {
+	return _((<IState>(yield select())).tasks).filter(x => x.taskId === action.id).head()
+}
+
+export function* requestSetTaskCompletion(idToken: string, action: {id: string, isDone?: boolean}) : Iterator<any> {
+	const oldTask = yield* getTask(action)
 	const isDone = _.isUndefined(action.isDone) ? 
 		!oldTask.isDone : 
 		action.isDone
@@ -39,22 +42,25 @@ export function* requestSetTaskCompletion(idToken, action: {id: string, isDone?:
 	yield put({type: SET_TASK_COMPLETION, id: action.id, isDone})
 }
 
-export function* requestSetAllTasksCompletion(idToken, action: {isDone?: boolean}) : Iterator<any> {
+export function* requestSetAllTasksCompletion(idToken: string, action: {isDone?: boolean}) : Iterator<any> {
 	const {isDone} = action
-
 	const wrongStateItems = _((<IState>(yield select())).tasks).filter(x => x.isDone !== isDone)
 
-	yield wrongStateItems.map(x => call(requestSetTaskCompletion, {id: x.taskId, isDone})).value()
+	yield wrongStateItems.map(x => call(requestSetTaskCompletion, idToken, {id: x.taskId, isDone})).value()
 }
 
-export function* requestDeleteTask(idToken, action: {id: string}) : Iterator<any> {
+export function* requestDeleteTask(idToken: string, action: {id: string}) : Iterator<any> {
+	const oldTask = yield* getTask(action)
+
+	yield call(deleteDbItem, oldTask._id, idToken)
+
 	yield put({type: DELETE_TASK, id: action.id})
 }
 
-export function* requestClearCompleted(idToken, action: {}): Iterator<any> {
+export function* requestClearCompleted(idToken: string, action: {}): Iterator<any> {
 	const wrongStateItems = _((<IState>(yield select())).tasks).filter(x => x.isDone)
 
-	yield wrongStateItems.map(x => call(requestDeleteTask, {id: x.taskId})).value()	
+	yield wrongStateItems.map(x => call(requestDeleteTask, idToken, {id: x.taskId})).value()	
 }
 
 export function* mainLoop() : any {
@@ -72,10 +78,4 @@ export function* mainLoop() : any {
 	yield takeEvery(REQUEST_DELETE_TASK, requestDeleteTask, idToken)
 	yield takeEvery(REQUEST_CLEAR_COMPLETED, requestClearCompleted, idToken)
 	
-//	yield put({type: REQUEST_ADD_TAKS, text: "Hei"})
-
-/*	while (true) {
-		const task = <{text: string}>(yield take(REQUEST_ADD_TAKS))
-
-	} */
 }
