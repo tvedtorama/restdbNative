@@ -1,6 +1,10 @@
-An Auth0 powered todo-app in react-native connected to the restdb.io plug and play database.
+## An Auth0 powered todo-app in react-native connected to the restdb.io plug and play database.
 
-Tech stack
+Using the [restdb.io cloud database](https://restdb.io) to persist tasks.  See [this blog post](https://restdb.io/blog/#!posts/57cece1a2d5dbc27000000d3) for a similar example using their "pages" web technology.
+
+### Tech stack
+
+**Libraries**
 
 * react-native
 * [Auth0](https://github.com/auth0/react-native-lock) 
@@ -9,11 +13,13 @@ Tech stack
 * [react-motion](https://github.com/chenglou/react-motion)
 * axios
 
-Dev tools
+**Dev tools**
 
 * typescript 
 * babel
 * gulp
+
+**GUI and Authentication**
 
 The GUI is a port of the TODOMvc sample from the excellent [react-motion library](https://github.com/chenglou/react-motion).  Porting to typescript and react-native was fairly simple - the animation logic worked out of the box. The styling was much more challenging, however, and ATW not very flexible and a disgrace to the orgiginal (looks OK in iPhone 5 portrait). 
 
