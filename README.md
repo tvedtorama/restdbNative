@@ -1,4 +1,4 @@
-## An Auth0 powered todo-app in react-native connected to the restdb.io plug and play database.
+## A Todo App in react-native, with Authentication and Persistence
 
 Using the [restdb.io cloud database](https://restdb.io) to persist tasks.  See [this blog post](https://restdb.io/blog/#!posts/57cece1a2d5dbc27000000d3) for a similar example using their "pages" web technology.
 
