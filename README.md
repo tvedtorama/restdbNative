@@ -30,7 +30,7 @@ The GUI is a port of the TODOMvc sample from the excellent [react-motion library
 
 The GUI was also converted to redux and some very simple sagas takes care of persisting the user's inputs to the restdb database.
 
-User authentication with Auth0 is a breeze, the GUI simply displays a login screen which is overlaid with the Auth0 login panel.  When a JWT is received, the redux saga toggles state and the todo-GUI is shown.
+User authentication with Auth0 is a breeze, the GUI simply displays a login screen which is overlaid with the Auth0 login panel.  When a JWT is received, the redux saga toggles state and the todo-GUI is shown.  The JWT token is passed to restdb.  When you turn on `Enable private data`, its rest-api will only return records that is created by the user.
 
 ATW the styling is not very flexible and a disgrace to the orgiginal (looks OK in iPhone 5 portrait). 
 
@@ -46,7 +46,7 @@ To debug, use "remote js debugging" in chrome, and connect the amazing [remote-r
 
 ### Making it you own
 
-Set ut a free database over at restdb.io, and get an account at Auth0.  Configre the db in app/database.ts, setup the Auth0 clientId in components/Todo.tsx.
+Set ut a free database over at restdb.io, and get an account at Auth0.  Configre the db in `app/database.ts`, setup the Auth0 clientId in `components/Todo.tsx`.
 
 ### Typescript typings issues
 
