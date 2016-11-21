@@ -63,6 +63,7 @@ export function* requestClearCompleted(idToken: string, action: {}): Iterator<an
 	yield wrongStateItems.map(x => call(requestDeleteTask, idToken, {id: x.taskId})).value()	
 }
 
+// Main entrypoint for application, triggered by framework at startup - see init.ts
 export function* mainLoop() : any {
 	const action = yield take(LOGIN_OK) // Waits for login to complete
 	

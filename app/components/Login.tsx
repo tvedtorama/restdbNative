@@ -7,6 +7,7 @@ import {styles} from '../styles'
 
 var Auth0Lock = require('react-native-lock')
 
+// The clientId and domain identifies your account on Auth0.  CREATE YOUR OWN FOR YOUR APP!
 var lock = new Auth0Lock({clientId: "zoLMrrJUrcyp7iPkcpg6omSdakv5hZrS", domain: "digitalvaluenetwork.eu.auth0.com"});
 
 function loginOk(idToken: string) {
@@ -20,11 +21,14 @@ interface IMangledProps {
 export class LoginRaw extends React.Component<IMangledProps, any> {
 
 	componentDidMount() {
+		// Show Auth0 login screen as soon as the app starts and this page shows.
 		this.onLogin()
 	}
 
 	onLogin() {
-		lock.show({}, (err, profile, token) => {
+		// Call Auth0, which shows the login screen and allows the user to register, if not already.
+		// NB: ATW, restdb requires the email to be present in the JWT - so we request it in the scope.
+		lock.show({authParams: {scope: 'openid email'}}, (err, profile, token) => {
 			console.log('Logged in! : ', token);
 			this.props.loginOk(token.idToken)
 		});
