@@ -18,6 +18,7 @@ Using the [restdb.io cloud database](https://restdb.io) to persist tasks.  See [
 * typescript 
 * babel
 * gulp
+* [remote-redux-devtools](https://github.com/zalmoxisus/remote-redux-devtools)
 
 **Platforms**
 
@@ -40,9 +41,9 @@ redux-saga is used to control the flow of actions and data.  One set of actions 
 
 ### Building and Debugging
 
-Building is done by `gulp build` or `gulp watch`.  This produces at javascript file hierarchy under /build, which is used runtime. When hot reloading is activated, the GUI updates after each build. (ATW, this causes the login screen to reappear - not very "hot" then.)
+Building is done by `gulp build` or `gulp watch`.  This produces a javascript file hierarchy under `/build`, which is used runtime. When hot reloading is activated, the GUI updates after each build. (ATW, this appears to reset state and causes the login screen to reappear - not very "hot" then.)
 
-To debug, use "remote js debugging" in chrome, and connect the amazing [remote-redux-devtools](https://github.com/zalmoxisus/remote-redux-devtools).  This can be done by uncommenting `composeEnhancers(applyMiddleware(middleware)))` in *init.ts*.  With the remote devtools active, head over to remotedev.io/local and see the state of the app unfolding.  Magic!
+To debug, use "remote js debugging" to connect to Chrome. To inspect the Redux state, connect the amazing [remote-redux-devtools](https://github.com/zalmoxisus/remote-redux-devtools).  This can be done by uncommenting `composeEnhancers(applyMiddleware(middleware)))` in *init.ts*.  With the remote devtools active, head over to remotedev.io/local and see the state of the app unfolding.  Magic!
 
 ### Making it you own
 
