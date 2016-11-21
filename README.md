@@ -10,7 +10,7 @@ Using the [restdb.io cloud database](https://restdb.io) to persist tasks.  See [
 * [Auth0](https://github.com/auth0/react-native-lock) 
 * redux
 * redux-saga
-* [react-motion](https://github.com/chenglou/react-motion)
+* react-motion
 * axios
 
 **Dev tools**
@@ -18,7 +18,7 @@ Using the [restdb.io cloud database](https://restdb.io) to persist tasks.  See [
 * typescript 
 * babel
 * gulp
-* [remote-redux-devtools](https://github.com/zalmoxisus/remote-redux-devtools)
+* remote-redux-devtools
 
 **Platforms**
 
