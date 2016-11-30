@@ -1,7 +1,11 @@
 import * as React from 'react'
 import {connect} from 'react-redux'
 import {spring, presets, TransitionMotion} from 'react-motion' 
-import {View, ScrollView, Text, TextInput, Switch, TouchableHighlight, Button} from 'react-native'
+import {View, ScrollView, Text, TextInput, Switch, TouchableHighlight} from 'react-native'
+import * as ReactNative from 'react-native'
+
+// Button is missing, see: https://github.com/DefinitelyTyped/DefinitelyTyped/issues/13002
+const {Button} = (ReactNative as any as {Button: TouchableHighlight}) 
 
 import {IState} from '../IState' 
 import {REQUEST_ADD_TAKS, REQUEST_SET_TASK_COMPLETION, REQUEST_SET_ALL_TASKS_COMPLETION,
