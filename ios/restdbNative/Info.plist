@@ -52,7 +52,7 @@
 			<key>restdb.io</key>
 			<dict>
 				<key>NSTemporaryExceptionRequiresForwardSecrecy</key>
-				<false/>
+				<true/>
 				<key>NSIncludesSubdomains</key>
 				<true/>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
